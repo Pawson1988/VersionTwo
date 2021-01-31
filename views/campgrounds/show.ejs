@@ -1,0 +1,31 @@
+
+
+<%- layout ("/layouts/boilerplate.ejs") %>
+
+<div class="row mb-4">
+    <div class="col-md-6 offset-3">
+        <div class="card">
+                <img src="<%- campground.image %>" class="card-img-top" alt="A campgound picture" width="400px" height="400px">
+            <div class="card-body">
+                <h5 class="card-title"><%- campground.name %></h5>
+                <p class="card-text"><%- campground.description %></p>
+            </div>
+            <ul class="list-group list-group-flush">
+            <li class="list-group-item text-muted"><%- campground.location %></li>
+            <li class="list-group-item">$<%- campground.price %>.00/per night</li>
+            </ul>
+            <div class="card-body">
+            <a href="/campgrounds/new" class="card-link"><button class="btn btn-success">New</button></a>
+            <a href="/campgrounds" class="card-link"><button class="btn btn-success">All</button></a>
+             <form class="d-inline mr-2 ml-2" action="/campgrounds/<%- campground._id %>" method="POST">
+                    <button class="btn btn-warning">Delete</button>
+            </form>
+            <a href="/campgrounds/<%- campground._id %>/edit" class="card-link"><button class="btn btn-success">Edit</button></a>
+               
+            </div>
+        </div>
+    </div>   
+</div>
+    
+</body>
+</html>

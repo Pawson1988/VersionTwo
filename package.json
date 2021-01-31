@@ -1,0 +1,24 @@
+{
+  "name": "yelpcamp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "James",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.5",
+    "ejs-mate": "^3.0.0",
+    "express": "^4.17.1",
+    "g": "^2.0.1",
+    "git": "^0.1.5",
+    "method-override": "^3.0.0",
+    "mongoose": "^5.10.9",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.7"
+  }
+}

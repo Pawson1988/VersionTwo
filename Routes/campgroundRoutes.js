@@ -1,20 +1,25 @@
 const Campground = require('../models/campground');
 
 const express        = require('express'),
-      router         = express.Router();
+      router         = express.Router(),
+      AppError       = require("../appError")
 
+//The catch Async function is used instead of using try and catch on every single route,
+//instead we can just wrap the call in a callback function and let the catchAsync function do the work
+
+function catchAsync(fn){
+     return function (req, res, next) {
+        fn(req, res, next).catch((err) => {
+            next(err)
+        })}
+}
 
         // The home/landing page
-    router.get("/", async (req, res, next) => {
-    try{
-        res.render("landing");
-    } catch(err) {
-        next(err)
-    }
-    })
+    router.get("/", catchAsync(async (req, res, next) => {
+            res.render("landing"); 
+    }))
 
-    router.post("/campgrounds", async (req, res, next) => {
-    try{
+    router.post("/campgrounds", catchAsync(async (req, res, next) => {
         //get data from form and add to campgrounds database
         let name = req.body.name;
         let price = req.body.price;
@@ -32,52 +37,33 @@ const express        = require('express'),
         })
         await campground.save();
         res.redirect(`/campgrounds/${campground._id}`)
-    } catch(err) {
-        next(err)
-    }
-    })
+    }))
 
-    router.get("/campgrounds", async (req, res, next) => {
+    router.get("/campgrounds", catchAsync(async (req, res, next) => {
         // Get all campgrounds from database and show on the /campgrounds page 
 
         //the campgrounds object allows us to use the data in the html file)
-    try{
         const campgrounds = await Campground.find({})
         res.render("./campgrounds/index", { campgrounds })
-    } catch(err){
-        next(err)
-    }
-    })
+    }))
     
     // to render the form to input a new campground. form connected to post route /campgrounds
-    router.get("/campgrounds/new", async (req, res, next) => {
-    try{
+    router.get("/campgrounds/new", catchAsync(async (req, res, next) => {
         res.render("./campgrounds/new");
-    } catch(err){
-        next(err)
-    }
-    })
+    }))
 
-    router.get("/campgrounds/:id", async (req, res, next) => {
-    try{
+    router.get("/campgrounds/:id", catchAsync(async (req, res, next) => {
         const campground = await Campground.findById(req.params.id)
         res.render("./campgrounds/show", { campground });
-    } catch(err){
-        next(err)
-    }
-    })
+    }))
 
-    router.get("/campgrounds/:id/edit", async (req, res, next) => {
-    try{
+    router.get("/campgrounds/:id/edit", catchAsync(async (req, res, next) => {
         const campground = await Campground.findById(req.params.id)
         res.render("./campgrounds/edit", { campground });
-    } catch(err) {
-        next(err)
-    }
-    })
+   
+    }))
 
-    router.put("/campgrounds/:id", async (req, res, next) => {
-    try{
+    router.put("/campgrounds/:id", catchAsync(async (req, res, next) => {
        const {id} = req.params;
        
        let updatedCampground = {
@@ -90,20 +76,13 @@ const express        = require('express'),
 
        const campground = await Campground.findByIdAndUpdate(id, updatedCampground);
        res.redirect(`/campgrounds/${id}`);
-    } catch(err){
-        next(err)
-    }
-    })
+    }))
     
-    router.post("/campgrounds/:id", async (req, res, next) => {
-    try{
+    router.post("/campgrounds/:id", catchAsync(async (req, res, next) => {
         const { id } = req.params;
         const campground = await Campground.findOneAndDelete({ _id: id })
         res.redirect("/campgrounds")
-    } catch(err){
-        next(err)
-    }
-    })
+    }))
 
 
     //to export the routes to the app.js

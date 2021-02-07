@@ -1,4 +1,5 @@
 const { ENGINE_METHOD_ALL } = require('constants');
+const AppError = require('./appError');
 
 const express           = require('express'),
       app               = express(),
@@ -10,7 +11,7 @@ const express           = require('express'),
       morgan            = require('morgan'),
       ejsMate           = require('ejs-mate'),
       dotenv            = require("dotenv"),
-      
+     
       
 dotenv.config()
       
@@ -56,14 +57,18 @@ app.use(morgan("tiny"))
 // need to use this app.use to use the variable set to the routes file (middleware for routes)
 app.use("/", campgroundRoutes)
 
-//This is for error handling of the routes
+//This is for error handling of the routes - it needs an extra argument at the start and 
+// to get the default error handling from express, the arguemtn needs to be entered into 
+// the next function at the end of the function
 app.use((err, req, res, next) => {
-    console.log("somethin' went wrong!!")
+    const {status = 500, message = "speak to the systems administrator to rectify this issue"} = err;
+   res.status(status).send(message)
 })
 
 //for when somebody inputs an incorrect path in the url
 app.get("*", (req, res) => {
     res.send("404, not found!")
+
 })
 
 

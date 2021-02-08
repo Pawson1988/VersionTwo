@@ -3,7 +3,7 @@ const campground                = require('../models/campground'),
       cities                    = require("./cities"),
 { places, descriptors }         = require('./seedHelpers');
 
-mongoose.connect("mongodb+srv://James1988:Lisburn21@cluster0.3wcla.mongodb.net/ProjectYelpCamp?retryWrites=true&w=majority", { 
+mongoose.connect(`mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${MONGO_ATLAS_PASSWORD}@cluster0.3wcla.mongodb.net/ProjectYelpCamp?retryWrites=true&w=majority`, { 
     useNewUrlParser: true, 
     useUnifiedTopology: true, 
     useCreateIndex: true});
@@ -34,7 +34,7 @@ const seedDB = async () => {
             description: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Suscipit, vitae dolorem optio magni commodi dolore facilis, nobis deleniti corporis, architecto minus alias quod et vel hic? Voluptas reprehenderit sapiente maiores.",
             price: parseInt(`${price}:00`)
         })
-        await camp.save();
+        await camp.save();  
    }
 };
 

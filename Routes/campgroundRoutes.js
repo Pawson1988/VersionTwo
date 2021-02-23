@@ -1,18 +1,28 @@
 const Campground = require('../models/campground');
+const {campgroundSchema} = require('../Schemas');
+const express = require('express');
+const router = express.Router();
+const AppError = require("../utilities/appError");
+const catchAsync = require("../utilities/catchAsync");
 
-const express        = require('express'),
-      router         = express.Router(),
-      AppError       = require("../utilities/appError"),
-      catchAsync     = require("../utilities/catchAsync")
-
-
+    const validateCampground = (req, res, next) => {
+        campgroundSchema;
+        const {error} = campgroundSchema.validate(req.body);
+        console.log(error)
+        if(error){
+            const msg = error.details.map(el => el.message).join(",")
+            throw new AppError(msg, 400)}
+        else{
+            next()
+        } 
+    }
 
         // The home/landing page
     router.get("/", catchAsync(async (req, res, next) => {
             res.render("landing"); 
     }))
 
-    router.post("/campgrounds", catchAsync(async (req, res, next) => {
+    router.post("/campgrounds", validateCampground, catchAsync(async (req, res, next) => {
         //get data from form and add to campgrounds database
         let name = req.body.name;
         let price = req.body.price;
@@ -56,7 +66,7 @@ const express        = require('express'),
    
     }))
 
-    router.put("/campgrounds/:id", catchAsync(async (req, res, next) => {
+    router.put("/campgrounds/:id", validateCampground, catchAsync(async (req, res, next) => {
        const {id} = req.params;
        
        let updatedCampground = {

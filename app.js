@@ -43,6 +43,9 @@ app.engine('ejs', ejsMate);
 app.set("view engine", "ejs");
 app.set('views', path.join(__dirname, 'views'))
 
+//Use this to serve up static files such as css, html, js etc.. 
+app.use(express.static('Static'))
+
 // This parses the information from the form so that we can create a new database entry in the post route
 app.use(express.urlencoded({extended:true})) 
 
@@ -58,9 +61,8 @@ app.use("/", campgroundRoutes)
 
 //for when somebody inputs an incorrect path in the url
 app.all("*", (req, res, next) => {
-    next(new AppError("Page not found", 404));
+    res.render("404NotFound")
 })
-
 
 //This is for error handling of the routes - it needs an extra argument at the start and 
 // to get the default error handling from express, the arguemtn needs to be entered into 
@@ -70,8 +72,7 @@ app.use((err, req, res, next) => {
     console.log(name) 
     
     const {status = 500, message = "speak to the systems administrator to rectify this issue"} = err;
-    const nameMessage = message + "    " + name;
-    res.status(status).send(nameMessage)
+    res.status(status).render("error", { err })
 })
 
 

@@ -10,6 +10,7 @@ const express           = require('express'),
       morgan            = require('morgan'),
       ejsMate           = require('ejs-mate'),
       dotenv            = require("dotenv"),
+
      
       
 dotenv.config()
@@ -43,6 +44,8 @@ app.engine('ejs', ejsMate);
 app.set("view engine", "ejs");
 app.set('views', path.join(__dirname, 'views'))
 
+
+
 //Use this to serve up static files such as css, html, js etc.. 
 app.use(express.static('Static'))
 
@@ -56,9 +59,13 @@ app.use(methodOverride("_method"))
 app.use(morgan("tiny"))
 
 
+
 // need to use this app.use to use the variable set to the routes file (middleware for routes)
 app.use("/", campgroundRoutes)
 
+
+
+ 
 //for when somebody inputs an incorrect path in the url
 app.all("*", (req, res, next) => {
     res.render("404NotFound")

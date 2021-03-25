@@ -11,7 +11,13 @@ const campgroundSchema = new Schema({
     name: String,
     price: Number,
     description: String,
-    location: String
+    location: String,
+    reviews:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Review"
+        }
+    ]
 })
 
 // export to the app.js so the database can read it

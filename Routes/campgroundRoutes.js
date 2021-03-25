@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const AppError = require("../utilities/appError");
 const catchAsync = require("../utilities/catchAsync");
+const Review = require("../models/reviews");
 
     const validateCampground = (req, res, next) => {
         campgroundSchema;
@@ -85,6 +86,17 @@ const catchAsync = require("../utilities/catchAsync");
         const { id } = req.params;
         const campground = await Campground.findOneAndDelete({ _id: id })
         res.redirect("/campgrounds")
+    }))
+
+    router.post("/campgrounds/:id/reviews", catchAsync(async(req, res) => {
+        const { id } = req.params;
+        const campground = await Campground.findById(id)
+        const review = new Review(req.body.review);
+        campground.reviews.push(review);
+        await review.save();
+        await campground.save(); 
+        console.log(campground);
+        res.redirect(`/campgrounds/${id}`);
     }))
 
 

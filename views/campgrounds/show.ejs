@@ -25,16 +25,19 @@
             </div>
         </div>
         <h2>Leave a review</h2>
-        <form action="/campgrounds/<%-campground._id%>/reviews" class="mb-3" method="POST">
+        <form action="/campgrounds/<%-campground._id%>/reviews" class="mb-3 validated-form" method="POST" novalidate>
              <div class="mb-3">
                 <label class="form-label" for="rating">Rating</label>
                 <input class="form-range" type="range" min="1" max="5" name="review[rating]" id="rating">
             </div>
             <div class="mb-3">
                 <label class="form-label" for="body">Review</label>
-                <textarea class="form-control mb-3" name="review[body]" id="body" cols="30" rows="3">
+                <textarea class="form-control mb-3" name="review[body]" id="body" cols="30" rows="3" required>
 
                 </textarea>
+                    <div class="valid-feedback mb-3">
+                    Looks good!
+                    </div>
                 <button class="btn btn-success">Submit Review</button>
             </div> 
         </form>

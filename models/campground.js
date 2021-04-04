@@ -1,4 +1,5 @@
 const mongoose       = require("mongoose");
+const Reviews        = require("./reviews");
 
 
 //to set the mongoose.Schema to an easier variable
@@ -20,5 +21,9 @@ const campgroundSchema = new Schema({
     ]
 })
 
-// export to the app.js so the database can read it
+campgroundSchema.post('findOneAndDelete', async function (){
+    console.log("middleware executed successfully!");
+});
+
+// export to the app.js so the database can read it and define the model
 module.exports = mongoose.model("campground", campgroundSchema);

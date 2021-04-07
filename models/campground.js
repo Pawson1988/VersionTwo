@@ -21,8 +21,15 @@ const campgroundSchema = new Schema({
     ]
 })
 
-campgroundSchema.post('findOneAndDelete', async function (){
-    console.log("middleware executed successfully!");
+campgroundSchema.post('findOneAndDelete', async function (doc){
+    console.log("working")
+     if(doc){
+         await Reviews.deleteMany({
+             _id: {
+                 $in: doc.reviews
+                }
+            });
+     }
 });
 
 // export to the app.js so the database can read it and define the model

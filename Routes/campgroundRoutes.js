@@ -1,10 +1,11 @@
+const Review = require("../models/reviews");
 const Campground = require('../models/campground');
 const {campgroundSchema, reviewSchema} = require('../Schemas');
 const express = require('express');
 const router = express.Router();
 const AppError = require("../utilities/appError");
 const catchAsync = require("../utilities/catchAsync");
-const Review = require("../models/reviews");
+
 
     const validateCampground = (req, res, next) => {
         campgroundSchema;
@@ -91,13 +92,15 @@ const Review = require("../models/reviews");
            image: req.body.image
        }
 
-       const campground = await Campground.findByIdAndUpdate(id, updatedCampground);
+       await Campground.findByIdAndUpdate(id, updatedCampground);
        res.redirect(`/campgrounds/${id}`);
     }))
     
     router.post("/campgrounds/:id", catchAsync(async (req, res, next) => {
         const { id } = req.params;
-        const campground = await Campground.findOneAndDelete({ _id: id })
+        const deletedCampground = await Campground.findOneAndDelete({ _id: id })
+        // await Review.deleteMany({_id:{ $in: deletedCampground.reviews}});
+        console.log(deletedCampground);
         res.redirect("/campgrounds")
     }))
 

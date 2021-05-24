@@ -19,18 +19,6 @@ const catchAsync = require("../utilities/catchAsync");
         } 
     }
 
-    const validateReview = (req, res, next) => {
-        reviewSchema;
-        const {error} = reviewSchema.validate(req.body);
-        console.log(error)
-        if(error){
-            const msg = error.details.map(el => el.message).join(",")
-            throw new AppError(msg, 400)}
-        else{
-            next()
-        } 
-    }
-
         // The home/landing page
     router.get("/", catchAsync(async (req, res, next) => {
             res.render("landing"); 
@@ -53,6 +41,7 @@ const catchAsync = require("../utilities/catchAsync");
             image: image
         })
         await campground.save();
+        req.flash("success", "You successfully created a new camp ground");
         res.redirect(`/campgrounds/${campground._id}`)
     }))
 
@@ -71,6 +60,10 @@ const catchAsync = require("../utilities/catchAsync");
 
     router.get("/campgrounds/:id", catchAsync(async (req, res, next) => {
         const campground = await Campground.findById(req.params.id).populate('reviews')
+        if(!campground){
+            req.flash("error", "It seems there isn't a campground here that goes by that name");
+            res.redirect("/campgrounds");
+        }
         // console.log(campground)
         res.render("./campgrounds/show", { campground });
     }))
@@ -93,6 +86,7 @@ const catchAsync = require("../utilities/catchAsync");
        }
 
        await Campground.findByIdAndUpdate(id, updatedCampground);
+       req.flash("success", "You successfully updated the camp ground!")
        res.redirect(`/campgrounds/${id}`);
     }))
     
@@ -101,27 +95,10 @@ const catchAsync = require("../utilities/catchAsync");
         const deletedCampground = await Campground.findOneAndDelete({ _id: id })
         // await Review.deleteMany({_id:{ $in: deletedCampground.reviews}});
         console.log(deletedCampground);
+        req.flash("success", "You successfully deleted the camp ground!");
         res.redirect("/campgrounds")
     }))
 
-    router.post("/campgrounds/:id/reviews", validateReview, catchAsync(async(req, res) => {
-        const { id } = req.params;
-        const campground = await Campground.findById(id)
-        const review = new Review(req.body.review);
-        campground.reviews.push(review);
-        await review.save();
-        await campground.save(); 
-        // console.log(campground);
-        res.redirect(`/campgrounds/${id}`);
-    }))
-
-    router.delete("/campgrounds/:id/reviews/:reviewsId", catchAsync(async(req, res) => {
-        const {id, reviewsId} = req.params;
-         await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewsId}})
-         await Review.findByIdAndDelete(reviewsId);
-         res.redirect(`/campgrounds/${id}`);
-    }))
-
-
+    
     //to export the routes to the app.js
 module.exports = router;

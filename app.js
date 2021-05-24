@@ -10,8 +10,10 @@ const express           = require('express'),
       morgan            = require('morgan'),
       ejsMate           = require('ejs-mate'),
       dotenv            = require("dotenv"),
-    
-     
+      reviewRoutes      = require("./Routes/reviewRoutes");
+      session           = require("express-session");
+      flash             = require("connect-flash");
+      cookieParser      = require("cookie-parser");
       
 dotenv.config()
       
@@ -45,6 +47,18 @@ app.set("view engine", "ejs");
 app.set('views', path.join(__dirname, 'views'))
 
 
+const sessionConfig = {
+    secret: "averygoodsecret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, 
+        maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+}
+
+
+
 
 //Use this to serve up static files such as css, html, js etc.. 
 app.use(express.static('Static'))
@@ -59,10 +73,20 @@ app.use(methodOverride("_method"))
 app.use(morgan("tiny"))
 
 
+// Middleware for session and flash with session configuratoon passed into the session middleware.. 
+app.use(session(sessionConfig));
+app.use(flash());
+// Flash middleware to take a flash message from any route/page and display that flash message
+app.use((req, res, next) => {
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
+})
+
 
 // need to use this app.use to use the variable set to the routes file (middleware for routes)
-app.use("/", campgroundRoutes)
-
+app.use("/", campgroundRoutes);
+app.use("/", reviewRoutes);
 
 
  
